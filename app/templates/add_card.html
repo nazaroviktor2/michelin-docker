@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'home/css/add_card.css' %}">
+{% if request.user.is_authenticated %}
+{% if request.user.is_editor or request.user.is_staff %}
+<div id="layer1" >
+	<div class="container">
+		<button onclick="document.location='{% url 'add_card_file' %}'" class="add_button" title="Добавить из файла" ></button>
+		<form name="add_card" method="post" >
+			{% csrf_token %}
+			<div class="content_name">
+				<h2 style="text-align: center;">Введите название: </h2>
+				<input type="text" name="name" class="cnt">
+			</div>
+			<div class="content_rules">
+				<h2 style="text-align: center;">Введите инструкцию: </h2>
+				<div class="rules_text">
+					<textarea class="output_client_rules" name="instruction" cols="100" rows="10" id="output_client_rules"></textarea>
+				</div>
+			</div>
+			<div class="content_text">
+				<h2 style="text-align: center;">Введите текст: </h2> 
+				<div class="file_content">
+					<textarea class="output_client_text" name="text" cols="100" rows="10" id="output_client_text"></textarea>
+				</div>
+			</div>
+			<div>
+				<div style="padding: 5px;">
+					<label for="time_speed">Среднее скорость чтения(слов в минуту) &nbsp;</label>
+					<input type="number" name="time_speed" class="cnt" id="time_speed" min="1" max="2000" value="130">
+				</div>
+				<div style="padding: 5px;">
+					<label for="error">Диапазон ошибок(+-секунд) &nbsp;</label>
+					<input type="time" name="error" class="cnt" step="1"  id="error" value="00:00:10">
+				</div>
+				<div style="padding: 5px;">
+					<input type="checkbox" id="accent" name="accent" checked>
+					<label for="accent">Раставить ударение</label>
+				</div>
+				<button type="submit" class="btn">Создать</button>
+				<button type="reset" class="btn">Очистить</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

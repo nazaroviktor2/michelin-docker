@@ -1,0 +1,365 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{% static 'home/css/card_style.css' %}">
+<style>
+    .alert {
+        padding: 20px;
+        margin: 15px auto;
+        width: 89%;
+        background-color: #f44336;
+        color: white;
+        text
+    }
+    
+    .closebtn {
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    
+    .closebtn:hover {
+        color: black;
+    }
+    .button-grid{
+        display: inline;
+        padding: 20px;
+    }
+</style>
+</head>
+<div class="alert" id="main">
+    <span class="closebtn" onclick="this.parentElement.style.display='none'; set_t();">&times;</span>
+    Через <span class="clock">5</span> секунд начнется Запись
+</div>
+<div class="wrapper">
+    <div class="header">
+        <h1 style="text-align: center;" >{{ card.name }} </h1>
+    </div>
+    <div class="lb">
+        <button class="left_button" title="Предыдущая карта" onclick="document.location='{% url 'card' %}?id={{ card.id }}&status=last'"></button>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div class="rp">
+        <button  onclick="document.getElementById('rpID').style.display='block'" class="report_button" title="Пожаловаться"></button>
+    </div>
+    {% endif %}
+    <div class="rb">
+        <button class="right_button" title="Следующая карта" onclick="document.location='{% url 'card' %}?id={{ card.id }}&status=next'"></button>
+    </div>
+    <div class="content_rules">
+        <h2 style="text-align: center;">Инструкция</h2>
+        <div class="rules_text">
+            <textarea class="output_client_rules" name="rules_for_reader" cols="100" rows="10" disabled id="output_client_rules">{{ card.instruction }}</textarea>
+        </div>
+    </div>
+    <div class="content_text">
+            <h2 style="text-align: center;">Текст</h2>
+            <div class="file_content">
+                <textarea class="output_client_text" name="text_for_reader" cols="100" rows="10" disabled id="output_client_text">{{ card.text }}</textarea>
+            </div>
+    </div>
+    <div class="footer">
+        {% if request.user.is_authenticated %}
+        <div class="wrapper_seek">
+            <div class="left_side"><p>A-<p></div>
+            <div class="center_side"><input id="seek" type="range" name="seekbar" step="1" min="15" max="75"></div>
+            <div class="right_side"><p>A+<p></div>
+        </div>  
+        <div class="voice_conteiner">
+            <div id="audio">
+                {% for audio in audios %}
+                <audio src ="{{ audio.file_path.url }}" controls></audio>
+                {% endfor %}
+            </div>
+            <div class="button-grid">
+                <button class="btn" id="start" onclick="set_t(); set_n(); recording()">Запись</button>
+                <button class="btn_KIRILL" id="pause">Пауза</button>
+                <button class="btn" id="resume">Продолжить</button>
+                <button onclick="set_t()" class="btn" id="stop">Остановить</button>
+                <button onclick="print()" class="btn" id="sub">Отправить</button>
+            </div>
+        </div>
+    </div>
+    <div class="video_translator">
+        <div id="video">
+            {% for video in videos %}
+            <video   src ="{{ video.file_path.url }}" controls></video>
+            {% endfor %}
+        </div>
+        <div id="stream"><video id="vid" autoplay></video></div>
+    </div>
+</div>
+<div class="button-report">
+    <div id="rpID" class="modal">
+        <div>
+            <div class="modal-content_rp animate">
+                <div class="imgcontainer">
+                    <span onclick="document.getElementById('rpID').style.display='none'" class="close"
+                        title="Закрыть окно">&times;
+                    </span>
+                </div>
+                <div class="container_rp">
+                    <h1>Что-то не так?</h1>
+                    <textarea class="rparea" name="rptxt" id="rptxt" cols="50" rows="13"></textarea>
+                </div>
+                <button class="btn" style="margin: 0 auto 10px auto; display: block;" onclick="sendReport()">Отправить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11" hidden id="TOSTFULL">
+    <div class="toast" id = "EpicToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="../static/home/images/tst-logo.png" alt="..." class="rounded me-2" width="30" height="20">
+            <strong class="me-auto" style="margin-top: 10px;">Michelin</strong>
+            <small class="text-muted">Now</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" style="margin:auto;">
+            <div id="toast-text"></div>
+            <button class="btn-tostt" id="load"  onclick="uploadBlob();">Да</button>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+<script>
+var videoChunks = [];
+var audioChunks = [];
+var dur = 0;
+function Toasty()
+{
+    var tst = document.getElementById("EpicToast");
+    var tst_el  = new bootstrap.Toast( tst, option );
+    tst_el.show();
+}
+var option = {
+    animation: true,
+    delay:5000
+};
+var t = 5;
+var n = 0;
+var time = document.getElementsByClassName("clock")[0];
+function set_t(){
+    t = -1
+};
+function set_n(){
+ n = n +1;
+};
+function fun() {
+    if (t > 0){
+        t--;
+        time.innerHTML = t;
+    }else if (t == 0){
+        recording();
+    };
+};
+if ("{{ request.user.allow_auto_transition }}" == "True"){
+    myAudio = document.getElementById('audio').firstElementChild;
+    if (myAudio != null){
+        document.getElementById('main').style.display = 'none';
+        t = 0;
+    }
+    if (t > 0){
+        var inter = setInterval("fun()", 1000);
+    };
+}else{
+    document.getElementById('main').style.display = 'none';
+    t = 0;
+};
+function sendReport() {
+    var report_text = document.getElementById('rptxt');
+    alert(report_text.value);
+    fetch('{{ request.get_full_path }}', {
+        method: "POST",
+        body: JSON.stringify({text: report_text.value}),
+        headers: { "X-CSRFToken": '{{ csrf_token }}',"Name":"Report"},
+    })
+    .then(response => {
+    window.location.href = '{{ request.get_full_path }}'})
+    .catch(err => alert(err));
+};
+var modal = document.getElementById('rpID');
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+document.getElementById("stream").hidden = true;
+var vidElement=null;
+document.getElementById('pause').hidden = true;
+document.getElementById('resume').hidden = true;
+
+function recording() {
+    if (t <= 0){
+        document.getElementById('main').style.display = 'none';
+    };
+    if (document.getElementById("start").hidden == false){
+        var start_timer = new Date().getTime();
+        var stop_timer = 0;
+        var range = 0;
+        dur = 0;
+        if ("{{ request.user.allow_video }}" == "True"){
+            navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+            .then(stream => {
+                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                document.getElementById("stream").hidden = false;
+                document.getElementById("video").hidden = true;
+                vidElement=document.getElementById("vid");
+                vidElement.srcObject=stream;
+                vidElement.muted = true;
+                vidElement.play();
+
+                videoChunks = [];
+                mediaRecorder.addEventListener("dataavailable", function (event) {
+                    videoChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener("stop", function () {
+                    const videoBlob = new Blob(videoChunks, {
+                        type: 'video/mp4'
+                    });
+                    const videoUrl = URL.createObjectURL(videoBlob);
+                    var video = document.createElement('video');
+                    video.src = videoUrl;
+                    video.controls = true;
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.preload = "auto";
+                    vidElement.pause();
+                    document.getElementById("stream").hidden = true;
+                    document.getElementById("video").hidden = false;
+                    document.querySelector('#video').replaceChildren(video);
+
+                    document.querySelector('#send').addEventListener('click', function () {
+                        fetch('{{ request.get_full_path }}', {
+                            method: "POST",
+                            body: audioUrl
+                        })
+                        .then(response => alert('Blob Uploaded'));
+                    });
+                });
+                document.querySelector('#pause').addEventListener('click', function () {
+                    mediaRecorder.pause();
+                });
+                document.querySelector('#resume').addEventListener('click', function () {
+                    mediaRecorder.resume();
+                });
+                document.querySelector('#stop').addEventListener('click', function () {
+                    mediaRecorder.stop();
+                });
+            });
+        };
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+            audioChunks = [];
+            document.getElementById('start').hidden = true;
+            document.getElementById('pause').hidden = false;
+            mediaRecorder.addEventListener("dataavailable", function (event) {
+                audioChunks.push(event.data);
+            });
+
+            mediaRecorder.addEventListener("stop", function () {
+                const audioBlob = new Blob(audioChunks, {
+                    type: 'audio/wav'
+                });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                var audio = document.createElement('audio');
+                audio.src = audioUrl;
+                audio.controls = true;
+                audio.autoplay = true;
+                audio.preload = "auto";
+                document.querySelector('#audio').replaceChildren(audio);
+
+            });
+            document.querySelector('#pause').addEventListener('click', function () {
+                mediaRecorder.pause();
+                stop_timer = new Date().getTime();
+                document.getElementById('pause').hidden = true;
+                document.getElementById('resume').hidden = false;
+            });
+            document.querySelector('#resume').addEventListener('click', function () {
+                mediaRecorder.resume();
+                range = new Date().getTime() - stop_timer;
+                document.getElementById('pause').hidden = false;
+                document.getElementById('resume').hidden = true;
+            });
+            document.querySelector('#stop').addEventListener('click', function () {
+                mediaRecorder.stop();
+                dur = Math.floor((new Date().getTime() - start_timer - range)/1000);
+
+                document.getElementById('pause').hidden = true;
+                document.getElementById('resume').hidden = true;
+                document.getElementById('start').hidden = false;
+            });
+        });
+    };
+};
+var rng = document.getElementById('seek');
+var text = document.getElementById('output_client_text');
+var text_rules = document.getElementById('output_client_rules');
+rng.addEventListener("input",
+    function () {
+        text.style.fontSize = rng.value + 'px'
+        text_rules.style.fontSize = rng.value + 'px'
+});
+function print(){
+    document.getElementById("TOSTFULL").hidden = false;
+    toast = document.getElementById("toast-text");
+    toast.innerHTML = "";
+    if (toSeconds("{{ card.duration_min }}") > dur){
+        Toasty();
+        toast.innerHTML = "Запись слишком короткая. Всё равно отправить?";
+    }else if (toSeconds("{{ card.duration_max }}") < dur){
+        Toasty();
+        toast.innerHTML = "Запись слишком длинная. Всё равно отправить?";
+    }else{
+        uploadBlob();
+    }
+}
+function toSeconds(string){
+    const timeArray = string.split(":");
+    return Number(timeArray[0]) * 3600 + Number(timeArray[1]) * 60 + Number(timeArray[2])
+}
+function uploadBlob() {
+    myAudio = document.getElementById('audio').firstElementChild;
+    myVideo = document.getElementById('video').firstElementChild;
+
+    const videoBlob = new Blob(videoChunks, {
+    type: 'video/mp4'
+});
+        const audioBlob = new Blob(audioChunks, {
+            type: 'audio/wav'
+        });
+
+    if ("{{ request.user.allow_video }}" == "True"){
+ fetch('{{ request.get_full_path }}', {
+                method: "POST",
+                body: videoBlob,
+                headers: { "X-CSRFToken": '{{ csrf_token }}',"Name":"Video", "Overwrites":n},
+            })
+            .catch(err => alert(err));
+  }
+
+        fetch('{{ request.get_full_path }}', {
+            method: "POST",
+            body: audioBlob,
+            headers: { "X-CSRFToken": '{{ csrf_token }}',"Name":"audio", "Audio-Time":dur, "Overwrites":n},
+        }).then(response => {
+        window.location.href = '{% url 'card' %}?id={{ card.id }}&status=next'})
+        .catch(err => alert(err));
+
+
+};
+
+</script>
+{% endblock %}

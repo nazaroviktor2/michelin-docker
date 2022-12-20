@@ -1,0 +1,438 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Поля ввода полной ширины */
+input[type=text],
+input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Установите стиль для всех кнопок */
+.btn{
+    background-color: #ffffff; 
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 25px;
+    border: 3px solid #ffffff;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+.buttonhome {
+    background-color: #fd0202;
+    float:right;    
+    color: white;
+    padding: 14px 25px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: 3px solid #f6f6f6;
+    font-family: 'Poppins', sans-serif;
+	font-size:20px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btnhome {
+    background-color: #fd0202;
+    float:right;    
+    color: white;
+    padding: 14px 25px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: 3px solid #f6f6f6;
+    font-family:Helvetica;
+	font-size:20px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.button-wrapper{
+    display: flex;	
+    justify-content: center;	
+    margin: 0 auto;
+  }
+button:hover {
+    opacity: 0.8;
+}
+
+/* Дополнительные стили для кнопки Отмена */
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+/* Центрируйте изображение и установите кнопку Закрыть */
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+.fig {
+    text-align: center;
+}
+img.profile_av {
+    width: 20%;
+    border-radius: 0%;
+}
+.container-buttons {
+    display: flex;
+    justify-content: space-around;
+  }
+img.avatar {
+    width: 40%;
+    border-radius: 0%;
+}
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* Модальный (фон) */
+.modal {
+    display: none;
+    /* Скрыто по умолчанию */
+    position: fixed;
+    /* Оставаться на месте */
+    z-index: 1;
+    /* Сидеть на вершине */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Полная ширина */
+    height: 100%;
+    /* Полная высота */
+    overflow: auto;
+    /* Включите прокрутку, если это необходимо */
+    background-color: rgb(0, 0, 0);
+    /* Цвет запасной вариант  */
+    background-color: rgba(0, 0, 0, 0.4);
+    /*Черный с непрозрачностью */
+    padding-top: 60px;
+}
+
+/* Модальное содержание/бокс */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto;
+    /* 5% сверху, 15% снизу и по центру */
+    border: 1px solid #888;
+    width: 40%;
+    height: 52%;
+    /* Может быть больше или меньше, в зависимости от размера экрана */
+}
+
+
+/* Кнопка закрытия (x) */
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+.dob {
+    text-align:  center;
+   }
+
+
+/* Добавить анимацию масштабирования */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {
+        -webkit-transform: scale(0)
+    }
+
+    to {
+        -webkit-transform: scale(1)
+    }
+}
+
+@keyframes animatezoom {
+    from {
+        transform: scale(0)
+    }
+
+    to {
+        transform: scale(1)
+    }
+}
+
+/* Измените стили для кнопки span и cancel на очень маленьких экранах */
+@media screen and (max-width: 300px) {
+    span.psw {
+        display: block;
+        float: none;
+    }
+
+    .cancelbtn {
+        width: 100%;
+    }
+}
+
+.parent {
+    background-color: #fff;
+    width: 90%;
+    height: 90px;
+    border-radius: 8px;
+    margin: auto;
+    padding: 10px 10px 20px ;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .1);
+}
+body{
+    background: #f6f6f6;   
+}
+body.light-theme {
+    background: #f6f6f6;
+}
+body.dark-theme {
+    background: #111111;
+  }
+body.dark-theme .parent {
+    background-color: #373737;
+  }
+body.dark-theme #layer1{
+    background-color: #373737;
+    color: #fff;
+}
+body.dark-theme .buttonhome{
+    border: 3px solid #373737;
+}
+body.dark-theme .container{
+    color: #fff;
+}
+body.dark-theme .btn {
+    border: 1px solid #373737;
+}
+body.dark-theme .add_button{
+    border-color: #373737;
+}
+body.dark-theme .wrapper{
+    background-color: #373737;
+    color: #fff;
+}
+body.dark-theme #output_client_text{
+    color: #fff;
+    background-color: gray;
+    border: 1px solid #373737;
+}
+body.dark-theme .left_button{
+    border: 1px solid #373737;
+}
+body.dark-theme .report_button{
+    border: 1px solid #373737;
+}
+body.dark-theme .right_button{
+    border: 1px solid #373737;
+}
+body.dark-theme #output_client_rules{
+    color: #fff;
+    background-color: gray;
+    border: 1px solid #373737;
+}
+body.dark-theme .btn:hover {
+    background-color:  #ffffff;
+    color: #111;
+}
+body.dark-theme .btn{
+    background-color: #fd0202; 
+    color: #fff;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid #373737;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+body.dark-theme .report_button {
+    background: url(../images/alert.png) 50% 50% no-repeat;
+    background-size: contain;
+    width: 35px;
+    height: 35px;
+    border-color: #373737;
+    border-style: solid;
+}
+body.dark-theme .right_button {
+    background: url(../images/arrow-right-bold.png) 50% 50% no-repeat;
+    background-size: contain;
+    width: 40px;
+    height: 40px;
+    border-color: #373737;
+    border-style: solid;
+}
+body.dark-theme .left_button {
+    background: url(../images/arrow-left-bold.png) 50% 50% no-repeat;
+    background-size: contain;
+    width: 40px;
+    height: 40px;
+    border-color: #373737;
+    border-style: solid;
+}
+body.dark-theme .add_button {
+    background: url(../images/file-document-plus_white.png) 50% 50% no-repeat;
+    background-size: contain;
+    width: 35px;
+    height: 35px;
+    border-color: #373737;
+    border-style: solid;
+    float: right;
+}
+body.dark-theme .cnt{
+    background-color: gray;
+    border: 1px solid #373737;
+    color: #fff;
+}
+body.dark-theme .quest_button{
+    background: url(../images/help_white.png) 50% 50% no-repeat;
+    background-size: contain;
+    width: 35px;
+    height: 35px;
+    border-color: #373737;
+    border-style: solid;
+    float: right;
+}
+body.dark-theme .container_rp{
+    color: white;
+    background-color: #373737;
+}
+body.dark-theme .modal-content_rp{
+    background-color: #373737;
+    border: 1px solid #373737;
+}
+body.dark-theme #rptxt{
+    background-color: gray;
+    color: #fff;
+    border: 1px solid #373737;
+}
+body.dark-theme .modal-content_fl{
+    background-color: #373737;
+    border: 1px solid #373737
+}
+body.dark-theme .btnhome{
+    border: 3px solid #373737;
+}
+body.dark-theme #id_username{
+    background-color: gray;
+    color: #fff;
+    border: 1px solid #373737;
+}
+body.dark-theme #id_password{
+    background-color: gray;
+    color: #fff;
+    border: 1px solid #373737;
+}
+body.dark-theme #id_password1{
+    background-color: gray;
+    color: #fff;
+    border: 1px solid #373737;
+}
+body.dark-theme #id_password2{
+    background-color: gray;
+    color: #fff;
+    border: 1px solid #373737;
+}
+body.dark-theme .page-item.active .page-link {
+    background-color: #fff;
+    border-color: #fff;
+    color: #111111;
+  }
+body.dark-theme .page-link{
+    color: #fff;
+    background-color: #fd0202;
+    border-color: #fd0202;
+    box-shadow: 4px 4px 10px rgba(255, 255, 255, 0.1);
+  }
+body.dark-theme .page-link:hover{
+    color: #fff;
+    background-color: #fd0202;
+    border-color: #fd0202;
+    box-shadow:0px 0px 10px 0px  rgba(255, 255, 255, 0.5);
+  }
+body.dark-theme .wrapper_form{
+    background-color: #373737;
+    color: #fff;
+}
+
+body.light{
+    background-color: #f6f6f6;
+}
+body.dark-theme .styled-table tbody{
+    background-color: #373737;
+    color: #fff;
+}
+body.dark-theme .btn_KIRILL{
+    color: #111111;
+    background-color: #fff;
+}
+body.dark-theme .number h2{
+    color: #fff;
+}
+body.dark-theme .number h2 span{
+    color: #fff;
+}
+body.dark-theme .number p{
+    color: rgba(255, 255, 255, 0.75);
+}
+body.dark-theme .btn_KIRILL{
+    background-color: #fff; 
+    color: #111;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+body.dark-theme .text-muted{
+    color: #fff !important;
+}
+body.dark-theme .toast-header{
+    display: flex;
+    align-items: center;
+    padding: .5rem .75rem;
+    color: #fff;
+    background-color: rgba(237, 7, 7, 0.85);
+    background-clip: padding-box;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    border-top-left-radius: calc(.25rem - 1px);
+    border-top-right-radius: calc(.25rem - 1px);
+}
+body.dark-theme .toast-body{
+    word-wrap: break-word;
+    color: #fff;
+    background-color: gray;
+}
+body.dark-theme .btn-tostt{
+    border: 1px solid gray;
+}

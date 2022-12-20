@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+
+        #layer1 {
+        width: 40%; /* Ширина первого слоя */
+        padding: 20px; /* Поля вокруг текста */
+        background-color: #fff; /* Цвет фона */
+        margin: auto;
+        border-radius: 8px;
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, .1);
+       }
+       .parent {
+        background-color: #fff;
+        width: 90%;
+        height: 60px;
+        border-radius: 8px;
+        margin: auto;
+        margin-top: -8px;
+        padding: 10px 10px 20px ;
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, .1);
+    }
+</style>
+
+<div class="button-wrapper">
+    <div id="layer1" class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit"class="btnhome">Login</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

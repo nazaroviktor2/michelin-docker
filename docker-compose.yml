@@ -1,0 +1,64 @@
+version: '3.9'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  db:
+    restart: always
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/pgdata
+
+    environment:
+      POSTGRES_USER: ${SQL_USER}
+      POSTGRES_PASSWORD: ${SQL_PASSWORD}
+      POSTGRES_DB: ${SQL_DATABASE}
+      
+
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - ${SQL_PORT}:5432
+    networks:
+      - app-tier
+
+  web:
+    build: ./app
+    restart: always
+    command: gunicorn michelinDictator.wsgi:application  --timeout 600 --bind 0.0.0.0:8000 
+    volumes:
+      - ./app/:/usr/src/app/
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    environment:
+      DB_PORT: 5432
+      SQL_HOST: db
+      NGINX_HOST: michelin.com
+    networks:
+      - app-tier
+  nginx:
+    restart: always
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    networks:
+      - app-tier
+    
+    
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

@@ -1,0 +1,71 @@
+.container {
+    width: 98%;
+    text-align: center;
+}
+#layer1 {
+    width: 70%;
+    padding: 10px;
+    background-color: #fff;
+    margin: auto;
+    margin-top: 2%;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .1);
+   }
+.parent {
+    background-color: #fff;
+    width: 90%;
+    height: 60px;
+    border-radius: 8px;
+    margin: auto;
+    margin-top: -8px;
+    padding: 10px 10px 20px ;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .1);
+}
+.name_card_t {
+    width: 58%;
+}
+input[type=text]{
+    width: 95%;
+}
+.output_content_rules{
+    width: 95%;
+}
+.output_client_rules{
+    font-size: 15px;
+    width: 95%;
+    resize: vertical;
+    overflow-y: scroll;
+}
+.output_client_text{
+    font-size: 15px;
+    width: 95%;
+    resize: vertical;
+    overflow-y: scroll;
+}
+
+.btn{
+    background-color: #ffffff; 
+    color: #333;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid #d9d9d9;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.btn:hover {
+    background-color: #fd0202;
+    color: #fff;
+}
+.add_button {
+    background: url(../images/file-document-plus.png) 50% 50% no-repeat;
+    background-size: contain;
+    width: 35px;
+    height: 35px;
+    border-color: #fff;
+    border-style: solid;
+    float: right;
+}

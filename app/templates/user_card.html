@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'home/css/user_card_style.css' %}">
+</head>
+
+{% if request.user.is_authenticated %}
+<div class="wrapper">
+    <div class="header">
+        <h1 style="text-align: center;" >{{ card.name }} </h1>
+    </div>
+    <div class="content_rules">
+        <h2 style="text-align: center;">Инструкция</h2>
+        <div class="rules_text">
+            <textarea class="output_client_rules" name="rules_for_reader" cols="100" rows="10" disabled id="output_client_rules">{{ card.instruction }}</textarea>
+        </div>
+    </div>  
+    <div class="content_text">
+            <h2 style="text-align: center;">Текст</h2>
+            <div class="file_content">
+                <textarea class="output_client_text" name="text_for_reader" cols="100" rows="10" disabled id="output_client_text">{{ card.text }}</textarea>
+            </div>
+    </div>
+    <div class="footer">
+
+        <div class="wrapper_seek">
+            <div class="left_side"><p>A-<p></div>
+            <div class="center_side"><input id="seek" type="range" name="seekbar" step="1" min="15" max="75"></div>
+            <div class="right_side"><p>A+<p></div>
+        </div>
+    </div>
+    <div class="db">
+        <form method="post" name="delete">
+            {% csrf_token %}
+        <input type="hidden" name="name" value="delete">
+            <button type="submit" class="btn">Удалить карточку</button>
+        </form>
+    </div>
+</div>
+
+<form method="post">
+     {% csrf_token %}
+    <input type="hidden" name="name" value="doit">
+    <div class="wrapper_form">
+        <div class="centered">
+            <div class="done">
+                Действие: 
+                <select name="card_adm" id="cards_audios">
+                    <option disabled selected>---------</option>
+                    <option value="delete">Удалить выбранные</option>
+                    <option value="download">Скачать выбранные</option>
+                </select>
+                <button type="submit" >Выполнить</button>
+            </div>
+            
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <td>
+                        <div class="form-group select-all">
+                            <input type="checkbox" id="select-all">
+                            <label for="select-all">
+                                <span class="checkbox">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                        </td>
+                        <td style="text-align: center;">ID</td>
+                        <td style="text-align: center;">Имя пользователя</td>
+                        <td style="text-align: center;">Аудио файл</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for audio in audios %}
+                    <tr>
+                        <td>
+<!--                        <div class="form-group">-->
+                            <input type="checkbox" name="audio" class="form-group" value="{{ audio.id }}">
+<!--                            <label for="web-developer-{{ audio_id }}">-->
+<!--                                <span class="checkbox">-->
+<!--                                    <span class="check"></span>-->
+<!--                                </span>-->
+<!--                            </label>-->
+<!--                        </div>-->
+                        </td>
+                        <th style="text-align: center;">{{ audio.id }}</th>
+                        <th style="text-align: center;"> {{ audio.user }}</th>
+                        <th> <audio src ="{{ audio.file_path.url }}" controls></audio> </th>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+</form>
+
+{% else %}
+<h1>Это не ваша карта</h1>
+{% endif %}
+<script>
+    var rng = document.getElementById('seek');
+    var text = document.getElementById('output_client_text');
+    var text_rules = document.getElementById('output_client_rules');
+    rng.addEventListener("input",
+        function () {
+            text.style.fontSize = rng.value + 'px'
+            text_rules.style.fontSize = rng.value + 'px'
+    });
+    const selectAll = document.querySelector('.form-group.select-all input');
+		const allCheckbox = document.getElementsByName('audio');
+		let listBoolean = [];
+		allCheckbox.forEach(item=> {
+			item.addEventListener('change', function () {
+				allCheckbox.forEach(i=> {
+					listBoolean.push(i.checked);
+				})
+				if(listBoolean.includes(false)) {
+					selectAll.checked = false;
+				} else {
+					selectAll.checked = true;
+				}
+				listBoolean = []
+			})
+		})
+
+		selectAll.addEventListener('change', function () {
+			if(this.checked) {
+				allCheckbox.forEach(i=> {
+					i.checked = true;
+				})
+			} else {
+				allCheckbox.forEach(i=> {
+					i.checked = false;
+				})
+			}
+		})
+</script>
+
+
+   {% endblock %}
+

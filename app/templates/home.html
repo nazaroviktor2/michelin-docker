@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<title>titile</title>
+</head>
+<body>
+  {% if request.user.is_authenticated %}
+<h1>{{user.username}}</h1>
+
+  <a href="{% url 'logout' %}">Выйти</a>
+    <h1> вашы карты </h1>
+    <tr>
+  {% for card in cards %}
+
+      {% if request.user == card.user %}
+        <br>
+  <a href="{% url 'home' %}api/card/{{ card.id }}">{{ card.name }}</a>
+      {% endif %}
+{% endfor %}
+      </tr>
+
+
+  {% else %}
+  <h1>No auth</h1>
+  <a href="{% url 'login' %}">Войти</a>
+  <a href="{% url 'register' %}">Регистрация</a>
+  {% endif %}
+  <tr>
+    <h1> карты</h1>
+  {% for card in cards %}
+  <br>
+  <a href="{% url 'home' %}api/card/{{ card.id }}">{{ card.name }}</a>
+{% endfor %}
+      </tr>
+
+</body>
+</html>
